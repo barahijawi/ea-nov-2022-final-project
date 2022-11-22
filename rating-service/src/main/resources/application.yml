@@ -1,0 +1,68 @@
+server:
+  port : 9011
+
+spring:
+  application:
+    name: RATING-SERVICE
+    zipkin:
+      base-url: http://localhost:9411/
+
+
+# for actuator , we use it along with reslience4j circute breaker
+management:
+  health:
+    circuitBreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+
+#for circut breaker
+
+#Hystrix DEPRECATED so we remove it and we use reslient 4j
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        - include: hystrix.stream
+#        - show-details: always
+
+
+#no need anymore, we bring from config server
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      default-zone: http://localhost/8761/eureka/
+#  instance:
+resilience4j:
+  circuitbreaker:
+    instances:
+      UserService: #from the name property over the method in userService class
+        register-health-indicator: true # for the above actuator health
+        event-consumer-buffer-size: 10
+        failure-rate-threshold: 50 # 50% or more is the thresold
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 5s # before change to halfopen
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+  retry:
+    instances:
+      UserService:
+        max-attempts: 5
+        wait-duration: 10s # for every retyry to wait before do the retry request
+  ratelimiter:
+    instances:
+      UserService:
+        limit-for-period: 10 # 10 requests are allowed
+        limit-refresh-period: 10s # 10 request allowed in 10s
+        timeout-duration: 3s
+

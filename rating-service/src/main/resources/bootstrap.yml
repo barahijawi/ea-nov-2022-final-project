@@ -1,0 +1,14 @@
+cloud:
+  config:
+    enabled: true
+    uri: http://localhost:9296
+
+spring:
+  application:
+    name: rating-service
+  cloud:
+    vault:
+      token: 60UyuVKG4GDhPfzgE2kZKHD50zZX60OXahmCnYT5kww=
+      scheme: http
+      kv:
+        enabled: true
