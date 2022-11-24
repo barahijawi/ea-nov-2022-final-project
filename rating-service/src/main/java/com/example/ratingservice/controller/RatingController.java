@@ -2,6 +2,7 @@ package com.example.ratingservice.controller;
 
 import com.example.ratingservice.entity.Rating;
 import com.example.ratingservice.service.RatingService;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class RatingController {
         ratingService.addRating(rating);
     }
 
+    @ApiModelProperty(position = 1, required = true, value = "801")
     @GetMapping("/getbyid")
     public Rating getRatingById(@PathVariable("id") Long id) {
         return ratingService.getRating(id);
